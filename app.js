@@ -1,6 +1,22 @@
-const http = require('http');
-const routes = require('./routes');
+const express = require('express');
 
-const server = http.createServer(routes);
+const app = express();
 
-server.listen(3000);
+app.use('/', (req, res, next) => {
+  console.log('This always runs');
+  next();
+});
+
+app.use('/product', (req, res, next) => {
+  res.send('<h1>I am product route</h1>');
+  // next();
+});
+
+app.use('/', (req, res, next) => {
+  res.send('<h1>I am default route</h1>');
+  // next();
+});
+
+app.listen(3000, () => {
+  console.log('Server started at 3000');
+});
