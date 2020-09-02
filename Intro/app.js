@@ -1,20 +1,18 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use('/', (req, res, next) => {
-  console.log('This always runs');
-  next();
-});
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
-app.use('/product', (req, res, next) => {
-  res.send('<h1>I am product route</h1>');
-  // next();
-});
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/', (req, res, next) => {
-  res.send('<h1>I am default route</h1>');
-  // next();
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
+
+app.use((req, res, next) => {
+  res.status(404).send('<h1>Page not found</h1>');
 });
 
 app.listen(3000, () => {
