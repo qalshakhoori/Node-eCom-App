@@ -3,6 +3,9 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
+const Product = require('./models/product');
+const User = require('./models/user');
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -16,15 +19,40 @@ const errorsController = require('./controllers/errors');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// This block is only needed because we don't have
+// an authentication mechanisme yet
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => console.log(err));
+});
+///////////////////////////////////////////////////
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
 app.use(errorsController.get404);
 
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Product);
+
 sequelize
   .sync()
+  // .sync({ force: true })
   .then((result) => {
-    // console.log(result);
+    return User.findByPk(1);
+  })
+  .then((user) => {
+    if (!user) {
+      return User.create({ name: 'Qassim', email: 'test@test.com' });
+    }
+    return user;
+  })
+  .then((user) => {
+    console.log(user);
     app.listen(3001);
   })
   .catch((err) => console.log(err));
