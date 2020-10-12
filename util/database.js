@@ -4,17 +4,15 @@ const MongoClient = mongodb.MongoClient;
 let _db;
 
 const mongoConnect = (callback) => {
-  MongoClient.connect(
-    'mongodb+srv://nodejs:bjYRqFxArgStIarz@nodejs.rgn7l.mongodb.net/shop?retryWrites=true&w=majority'
-  )
+  MongoClient.connect('mongodb://nodejs:Password1234@127.0.0.1:27017/shop')
     .then((client) => {
       console.log('Connected!');
       _db = client.db();
       callback(client);
     })
     .catch((err) => {
-      // console.log(err);
-      throw err;
+      console.log(err);
+      // throw err;
     });
 };
 

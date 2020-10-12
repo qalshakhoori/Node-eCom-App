@@ -1,14 +1,50 @@
 version: '3.1'
 
 services:
-  node-mysql:
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
+  mongo:
+    image: mongo
     restart: always
     ports:
-      - '3306:3306'
+      - '27017-27019:27017-27019'
     environment:
-      MYSQL_ROOT_PASSWORD: Password1234
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Password1234
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: Password1234
+##############################################################
+# docker exec -it nodejscourse_mongo_1 bash
+# mongo -u root -p Password1234
+# use shop
+# db.createUser(
+#    {
+#      user: "nodejs",
+#      pwd: passwordPrompt(),      // Or  "<cleartext password>"
+#      roles: [ { role: "readWrite", db: "shop" } ]
+#    }
+# )
+##############################################################
+
+# version: '3.1'
+
+# services:
+#   node-mysql:
+#     image: mysql
+#     command: --default-authentication-plugin=mysql_native_password
+#     restart: always
+#     ports:
+#       - '3306:3306'
+#     environment:
+#       MYSQL_ROOT_PASSWORD: Password1234
+
+##############################################################
 # docker ps
 # docker inspect nodejscourse_node-mysql_1 -f "{{json .NetworkSettings.Networks }}"
 # docker run -it --network nodejscourse_default --rm mysql mysql -hnodejscourse_node-mysql_1 -uroot -p
+##############################################################
