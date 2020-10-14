@@ -13,6 +13,7 @@ const shopRoutes = require('./routes/shop');
 
 const errorsController = require('./controllers/errors');
 const mongoConnect = require('./util/database').mongoConnect;
+const User = require('./models/user');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -20,13 +21,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // This block is only needed because we don't have
 // an authentication mechanisme yet
 app.use((req, res, next) => {
-  // User.findByPk(1)
-  //   .then((user) => {
-  //     req.user = user;
-  //     next();
-  //   })
-  //   .catch((err) => console.log(err));
-  next();
+  User.findById('5f868fff4bf5ab00074e9579')
+    .then((user) => {
+      req.user = new User(user.name, user.email, user.cart, user._id);
+      next();
+    })
+    .catch((err) => console.log(err));
 });
 ///////////////////////////////////////////////////
 
@@ -36,6 +36,5 @@ app.use(shopRoutes);
 // app.use(errorsController.get404);
 
 mongoConnect((client) => {
-  console.log(client);
   app.listen(3001);
 });
